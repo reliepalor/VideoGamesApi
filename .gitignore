@@ -1,0 +1,52 @@
+# ===============================
+# ASP.NET / ASP.NET Core
+# ===============================
+
+# Build results
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# OS generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Logs
+*.log
+
+# User secrets & environment
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+Firebase/firebase-admin.json
+
+
+# Publish output
+publish/
+
+# Node (if frontend exists)
+node_modules/
+
+# Test results
+TestResults/
+
+# NuGet
+packages/
+*.nupkg
+
+# Dotnet tools
+.dotnet/
