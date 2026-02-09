@@ -24,8 +24,15 @@ namespace VideoGameApi.Controllers.DigitalOrders
         [HttpPost("purchase")]
         public async Task<IActionResult> Purchase(CreateDigitalOrderDto dto)
         {
-            var orderId = await _orderService.CreateOrderAsync(UserId, dto);
-            return Ok(new { message = "Order created", orderId });
+            var result = await _orderService.CreateOrderAsync(UserId, dto);
+
+            if (!result.Success)
+            {
+                return BadRequest(new { 
+                    message = result.Error
+                });
+            }
+            return Ok(new { message = "Order created successfully", result });
         }
 
         [HttpGet("my")]

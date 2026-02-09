@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using VideoGameApi.Api.Dto.DigitalProducts;
 using VideoGameApi.Api.Interfaces.DigitalProducts;
-using VideoGameApi.Interfaces.DigitalProducts;
 
 namespace VideoGameApi.Controllers.DigitalProducts
 {
@@ -20,7 +19,7 @@ namespace VideoGameApi.Controllers.DigitalProducts
 
         // create digital product
         [HttpPost]
-        public async Task<IActionResult> Create(CreateDigitalProductDto dto)
+        public async Task<IActionResult> Create([FromForm] CreateDigitalProductDto dto)
         {
             var productId = await _digitalProductService.CreateProductAsync(dto);
             return Ok(new
@@ -29,6 +28,20 @@ namespace VideoGameApi.Controllers.DigitalProducts
                 productId
             });
         }
+
+        //update digital product
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(
+            int id,
+            [FromForm] UpdateDigitalProductDto dto)
+        {
+            var updated = await _digitalProductService.UpdateProductAsync(id, dto);
+            if (!updated)
+                return NotFound(new { message = "Digital product not found." });
+
+            return Ok(new { message = "Digital product updated successfully." });
+        }
+
 
         // add product key
         [HttpPost("keys")]
@@ -40,10 +53,38 @@ namespace VideoGameApi.Controllers.DigitalProducts
 
         // get all digital products
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
         {
-            var products = await _digitalProductService.GetAllProductsAsync();
+            Console.WriteLine($"includeInactive = {includeInactive}");
+
+            var products = await _digitalProductService
+                .GetAllProductsAdminAsync(includeInactive);
+
             return Ok(products);
         }
+
+
+        // soft delete a product
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> SoftDelete(int id)
+        {
+            var deleted = await _digitalProductService.SoftDeleteProductAsync(id);
+            if (!deleted)
+                return NotFound(new { message = "Digital product not found." });
+
+            return Ok(new { message = "Digital product deleted successfully." });
+        }
+
+        // restore deleted product
+        [HttpPost("{id}/restore")]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var restore = await _digitalProductService.RestoreProductAsync(id);
+            if (!restore)
+                return NotFound(new { message = "Digital product not found" });
+
+            return Ok(new { message = "Digital product restored successfullyy" });
+        }
+
     }
 }

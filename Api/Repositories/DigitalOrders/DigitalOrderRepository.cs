@@ -51,7 +51,8 @@ namespace VideoGameApi.Api.Repositories.DigitalOrders
 
         public void Update(DigitalOrder order)
         {
-            _context.DigitalOrders.Update(order);
+            _context.DigitalOrders.Attach(order);
+            _context.Entry(order).State = EntityState.Modified;
         }
 
         public async Task SaveChangesAsync()

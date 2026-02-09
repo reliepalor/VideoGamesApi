@@ -30,15 +30,22 @@ namespace VideoGameApi.Api.Services.DigitalOrders
             _keyRepo = keyRepo;
         }
 
-        public async Task<int> CreateOrderAsync(int userId, CreateDigitalOrderDto dto)
+        // create order = pending
+        public async Task<(bool Success, int OrderId, string? Error)> CreateOrderAsync(
+            int userId,
+            CreateDigitalOrderDto dto)
         {
+            
             var product = await _productRepo.GetByIdAsync(dto.DigitalProductId);
             if (product == null || !product.IsActive)
-                throw new InvalidOperationException("Product not found or inactive.");
+                return (false, 0, "Product not found or inactive.");
 
-            if (product.Stock < dto.Quantity)
-                throw new InvalidOperationException("Insufficient stock.");
+            // check available keys 
+            var availableKeys = await _keyRepo.CountUnusedKeyAsync(dto.DigitalProductId);
+            if (availableKeys < dto.Quantity)
+                return (false, 0, "This product is currently out of stock.");
 
+            // create order
             var order = new DigitalOrder
             {
                 UserId = userId,
@@ -52,17 +59,19 @@ namespace VideoGameApi.Api.Services.DigitalOrders
             await _orderRepo.AddAsync(order);
             await _orderRepo.SaveChangesAsync();
 
-            // Optionally add order items here or after approval depending on logic
-
-            return order.Id;
+            return (true, order.Id, null);
         }
 
+
+
+        // get all orders
         public async Task<IEnumerable<DigitalOrderResponseDto>> GetUserOrdersAsync(int userId)
         {
             var orders = await _orderRepo.GetByUserIdAsync(userId);
             return orders.Select(o => MapToDto(o));
         }
 
+        // get all orders - admin
         public async Task<IEnumerable<DigitalOrderResponseDto>> GetAllOrdersAsync()
         {
             var orders = await _orderRepo.GetAllAsync();
@@ -86,14 +95,16 @@ namespace VideoGameApi.Api.Services.DigitalOrders
             if (order == null) return false;
 
             var product = await _productRepo.GetByIdAsync(order.DigitalProductId);
-            if (product == null || product.Stock < order.Quantity)
-                throw new InvalidOperationException("Insufficient stock or product missing.");
+            if (product == null)
+                throw new InvalidOperationException("Product not found.");
 
-            // Deduct stock
-            product.Stock -= order.Quantity;
-            await _productRepo.SaveChangesAsync();
+            // check if there is available key
+            var availableKeys = await _keyRepo.CountUnusedKeyAsync(order.DigitalProductId);
+                if(availableKeys < order.Quantity)
+                    throw new InvalidOperationException("Insufficient stock.");
 
-            // Assign keys
+
+            // assign keys
             for (int i = 0; i < order.Quantity; i++)
             {
                 var key = await _keyRepo.GetUnusedKeyAsync(order.DigitalProductId);
@@ -131,8 +142,11 @@ namespace VideoGameApi.Api.Services.DigitalOrders
             if (order == null) return false;
 
             order.Status = "Rejected";
+            order.ApprovedAt = null;
+
             _orderRepo.Update(order);
             await _orderRepo.SaveChangesAsync();
+
             return true;
         }
 

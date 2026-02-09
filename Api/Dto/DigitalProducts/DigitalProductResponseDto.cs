@@ -13,6 +13,7 @@ namespace VideoGameApi.Api.Dto.DigitalProducts
         public decimal Price { get; set; }
         public string? Description { get; set; }
         public bool IsActive { get; set; }
+        public string? ImagePath { get; set; }
         public int Stock { get; set; }
         public int AvailableKeys {get; set;}
     }

@@ -34,10 +34,10 @@ namespace VideoGameApi.Api.Repositories.DigitalProducts
                 .ToListAsync();
         }
 
-        public async Task<int> CountUnusedKeyAsync(int productId)
+        public async Task<int> CountUnusedKeyAsync(int digitalProductId)
         {
             return await _context.DigitalProductKeys
-                .CountAsync(k => k.DigitalProductId == productId && !k.IsUsed);
+                 .CountAsync(k => k.DigitalProductId == digitalProductId && !k.IsUsed);
         }
 
         public Task MarkAsUsedAsync(DigitalProductKey key)

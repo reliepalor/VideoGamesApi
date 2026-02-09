@@ -6,15 +6,17 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using VideoGameApi.Api.Interfaces.DigitalProducts;
+using VideoGameApi.Api.Interfaces.DigitalOrders;
+using VideoGameApi.Api.Repositories.DigitalOrders;
 using VideoGameApi.Api.Repositories.DigitalProducts;
 using VideoGameApi.Api.Services;
+using VideoGameApi.Api.Services.DigitalOrders;
 using VideoGameApi.Api.Services.DigitalProducts;
 using VideoGameApi.Auth.Interfaces;
 using VideoGameApi.Auth.Services;
 using VideoGameApi.Data;
 using VideoGameApi.Hubs;
-using VideoGameApi.Interfaces.DigitalProducts;
+using VideoGameApi.Api.Interfaces.DigitalProducts;
 using VideoGameApi.Repositories.DigitalProducts;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +31,14 @@ var firebasePath = Path.Combine(
 builder.Services.AddScoped<IDigitalProductService, DigitalProductService>();
 builder.Services.AddScoped<IDigitalProductRepository, DigitalProductRepository>();
 builder.Services.AddScoped<IDigitalProductKeyRepository, DigitalProductKeyRepository>();
+builder.Services.AddScoped<IDigitalOrderItemRepository, DigitalOrderItemRepository>();
+builder.Services.AddScoped<IDigitalOrderRepository, DigitalOrderRepository>();
+builder.Services.AddScoped<
+    VideoGameApi.Api.Interfaces.DigitalOrders.IDigitalOrderService,
+    VideoGameApi.Api.Services.DigitalOrders.DigitalOrderService
+>();
+
+var services = builder.Services;
 
 
 // Add API controllers

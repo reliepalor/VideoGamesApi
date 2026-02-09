@@ -33,7 +33,7 @@ namespace VideoGameApi.Models.DigitalProducts
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
 
-        public ICollection<DigitalProductKey> ProductKeys { get; set; }
+        public ICollection<DigitalProductKey> DigitalProductKeys { get; set; }
             = new List<DigitalProductKey>();
     }
 }

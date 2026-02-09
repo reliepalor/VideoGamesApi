@@ -6,7 +6,7 @@ namespace VideoGameApi.Api.Interfaces.DigitalOrders
 {
     public interface IDigitalOrderService
     {
-        Task<int> CreateOrderAsync(int userId, CreateDigitalOrderDto dto);
+        Task<(bool Success, int OrderId, string? Error)> CreateOrderAsync(int userId, CreateDigitalOrderDto dto);
         Task<IEnumerable<DigitalOrderResponseDto>> GetUserOrdersAsync(int userId);
         Task<IEnumerable<DigitalOrderResponseDto>> GetAllOrdersAsync();
         Task<DigitalOrderResponseDto?> GetOrderByIdAsync(int id, int userId, bool isAdmin);

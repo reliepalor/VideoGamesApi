@@ -33,7 +33,7 @@ namespace VideoGameApi.Repositories.DigitalProducts
         public async Task<IEnumerable<DigitalProduct>> GetAllAsync()
         {
             return await _context.DigitalProducts
-                .Include(p => p.ProductKeys)
+                .Include(p => p.DigitalProductKeys)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
         }
@@ -41,7 +41,7 @@ namespace VideoGameApi.Repositories.DigitalProducts
         public async Task<DigitalProduct?> GetByIdAsync(int id)
         {
             return await _context.DigitalProducts
-                .Include(p => p.ProductKeys)
+                .Include(p => p.DigitalProductKeys)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 

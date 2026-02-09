@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using VideoGameApi.Interfaces.DigitalProducts;
+using VideoGameApi.Api.Interfaces.DigitalProducts;
 
 namespace VideoGameApi.Api.Controllers.DigitalProducts
 {
@@ -20,15 +20,23 @@ namespace VideoGameApi.Api.Controllers.DigitalProducts
         private int UserId =>
             int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-        [HttpGet]
         //get all digital products
+        [HttpGet]
         public async Task<IActionResult> GetAll(int id)
         {
-            var product = await _digitalProductService.GetProductAsync(id);
-            if (product == null)
+            var products = await _digitalProductService.GetProductAsync(id);
+            return Ok(products);
+        }
+
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var products = await _digitalProductService.GetProductAsync(id);
+            if (products == null)
                 return NotFound();
 
-            return Ok(product);
+            return Ok(products);
         }
 
         [HttpPost("{id}/assign-key")]
