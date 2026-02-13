@@ -156,8 +156,13 @@ namespace VideoGameApi.Api.Services.DigitalOrders
             {
                 Id = order.Id,
                 UserId = order.UserId,
+                UserName = order.User?.Username,
+                UserEmail = order.User?.Email,
+
                 DigitalProductId = order.DigitalProductId,
                 DigitalProductName = order.DigitalProduct?.Name ?? "",
+                ImagePath = order.DigitalProduct?.ImagePath ?? string.Empty,
+
                 Quantity = order.Quantity,
                 TotalPrice = order.TotalPrice,
                 Status = order.Status,

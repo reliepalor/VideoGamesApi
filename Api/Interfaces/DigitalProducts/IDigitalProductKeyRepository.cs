@@ -9,6 +9,7 @@ namespace VideoGameApi.Api.Interfaces.DigitalProducts
         Task<DigitalProductKey?> GetUnusedKeyAsync(int digitalProductId);
         Task MarkAsUsedAsync(DigitalProductKey key);
         Task<int> CountUnusedKeyAsync(int digitalProductId);
+        Task<IEnumerable<DigitalProductKey>> GetByProductIdAsync(int productId);
         Task SaveChangesAsync();
     }
 }

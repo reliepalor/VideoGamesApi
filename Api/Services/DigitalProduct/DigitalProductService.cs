@@ -214,6 +214,22 @@ namespace VideoGameApi.Api.Services.DigitalProducts
             return key.ProductKey;
         }
 
+        // get all product keys
+        public async Task<IEnumerable<DigitalProductKeyResponseDto>> GetProductKeysAsync(int productId)
+        { 
+            var keys = await _keyRepo.GetByProductIdAsync(productId);
+
+            return keys.Select(k => new DigitalProductKeyResponseDto
+            { 
+                Id = k.Id,
+                ProductKey = k.ProductKey,
+                IsUsed = k.IsUsed,
+                AssignedToUserId = k.AssignedToUserId,
+                UsedAt = k.UsedAt,
+                CreatedAt = k.CreatedAt
+            });
+        }
+
         // soft delete a digital products
         public async Task<bool> SoftDeleteProductAsync(int id)
         {

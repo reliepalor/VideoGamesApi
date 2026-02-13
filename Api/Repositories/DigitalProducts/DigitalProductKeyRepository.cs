@@ -48,6 +48,14 @@ namespace VideoGameApi.Api.Repositories.DigitalProducts
             return Task.CompletedTask;
         }
 
+        public async Task<IEnumerable<DigitalProductKey>> GetByProductIdAsync(int productId) 
+        { 
+            return await _context.DigitalProductKeys
+                .Where(k => k.DigitalProductId == productId)
+                .OrderByDescending(k => k.CreatedAt)
+                .ToListAsync();
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

@@ -22,9 +22,9 @@ namespace VideoGameApi.Api.Controllers.DigitalProducts
 
         //get all digital products
         [HttpGet]
-        public async Task<IActionResult> GetAll(int id)
+        public async Task<IActionResult> GetAll()
         {
-            var products = await _digitalProductService.GetProductAsync(id);
+            var products = await _digitalProductService.GetAllProductsAsync();
             return Ok(products);
         }
 

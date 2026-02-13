@@ -42,15 +42,6 @@ namespace VideoGameApi.Controllers.DigitalProducts
             return Ok(new { message = "Digital product updated successfully." });
         }
 
-
-        // add product key
-        [HttpPost("keys")]
-        public async Task<IActionResult> AddKey(AddDigitalProductKeyDto dto)
-        {
-            await _digitalProductService.AddProductKeyAsync(dto);
-            return Ok(new { message = "Product key added successfully" });
-        }
-
         // get all digital products
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] bool includeInactive = false)
@@ -63,6 +54,23 @@ namespace VideoGameApi.Controllers.DigitalProducts
             return Ok(products);
         }
 
+        // add product key
+        [HttpPost("keys")]
+        public async Task<IActionResult> AddKey(AddDigitalProductKeyDto dto)
+        {
+            await _digitalProductService.AddProductKeyAsync(dto);
+            return Ok(new { message = "Product key added successfully" });
+        }
+
+
+
+        //get all product keys
+        [HttpGet("{id}/keys")]
+        public async Task<IActionResult> GetKeys(int id)
+        { 
+            var keys = await _digitalProductService.GetProductKeysAsync(id);
+            return Ok(keys);
+        }
 
         // soft delete a product
         [HttpDelete("{id}")]

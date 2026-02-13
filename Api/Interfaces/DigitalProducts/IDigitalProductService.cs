@@ -13,6 +13,7 @@ namespace VideoGameApi.Api.Interfaces.DigitalProducts
         Task<string> AssignProductKeyAsync(int digitalProductId, int userId);
         Task<bool> SoftDeleteProductAsync(int id);
         Task<bool> RestoreProductAsync(int id);
+        Task<IEnumerable<DigitalProductKeyResponseDto>> GetProductKeysAsync(int productId);
         Task<IEnumerable<DigitalProductResponseDto>> GetAllProductsAdminAsync(bool includeInactive);
     }
 }
