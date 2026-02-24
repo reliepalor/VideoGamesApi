@@ -89,27 +89,38 @@ namespace VideoGameApi.Api.Services.DigitalOrders
             return MapToDto(order);
         }
 
+        public sealed class ServiceResult
+        {
+            public bool Success { get; init; }
+            public string Message { get; init; } = string.Empty;
+
+            public static ServiceResult Ok(string message = "Success") =>
+                new() { Success = true, Message = message };
+
+            public static ServiceResult Fail(string message) =>
+                new() { Success = false, Message = message };
+        }
+
+        // Replace the existing ApproveOrderAsync method with this version
         public async Task<bool> ApproveOrderAsync(int orderId)
         {
             var order = await _orderRepo.GetByIdAsync(orderId);
-            if (order == null) return false;
+            if (order == null)
+                return false;
 
             var product = await _productRepo.GetByIdAsync(order.DigitalProductId);
             if (product == null)
-                throw new InvalidOperationException("Product not found.");
+                return false;
 
-            // check if there is available key
             var availableKeys = await _keyRepo.CountUnusedKeyAsync(order.DigitalProductId);
-                if(availableKeys < order.Quantity)
-                    throw new InvalidOperationException("Insufficient stock.");
+            if (availableKeys < order.Quantity)
+                return false;
 
-
-            // assign keys
             for (int i = 0; i < order.Quantity; i++)
             {
                 var key = await _keyRepo.GetUnusedKeyAsync(order.DigitalProductId);
                 if (key == null)
-                    throw new InvalidOperationException("Not enough product keys.");
+                    return false;
 
                 key.IsUsed = true;
                 key.AssignedToUserId = order.UserId;
@@ -122,6 +133,7 @@ namespace VideoGameApi.Api.Services.DigitalOrders
                     DigitalOrderId = order.Id,
                     DigitalProductKeyId = key.Id,
                 };
+
                 await _itemRepo.AddAsync(orderItem);
             }
 
@@ -135,6 +147,7 @@ namespace VideoGameApi.Api.Services.DigitalOrders
 
             return true;
         }
+
 
         public async Task<bool> RejectOrderAsync(int orderId)
         {
